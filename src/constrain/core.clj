@@ -39,12 +39,17 @@
         intercept (- start-energy (* slope start-value))]
     [intercept slope]))
 
-(defn walk-downhill [constraints var env]
-  (let [[intercept slope] (linear-approximation constraints var env)]
-    (if (< (abs slope) 0.1)
-      env
-      (recur constraints var (update-in env [var]
-                                        (if (neg? slope) - +)
-                                        0.1)))))
+(defn walk-downhill
+  ([constraints var env] (walk-downhill constraints var env 0))
+  ([constraints var env times]
+     (let [[intercept slope] (linear-approximation constraints var env)]
+       (cond
+        (> times 10000) (throw (Throwable. "Constraints aren't stable"))
+        (< (abs slope) 0.1) env
+        :else (recur
+               constraints
+               var
+               (update-in env [var] (if (neg? slope) - +) 0.1)
+               (inc times))))))
 
 
