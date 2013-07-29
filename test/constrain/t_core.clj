@@ -32,6 +32,6 @@
              (let [c1 (constrain.core.Same. :a :b)
                    c2 (constrain.core.Same. :a :c)
                    env {:a 10 :b 50 :c 20}]
-               (walk-downhill [c1 c2] [:a :b :c] env) => (just {:a (roughly 20)
-                                                                    :b (roughly 20)
-                                                                    :c (roughly 20)}))))
+               (walk-downhill [c1 c2] [:a :b :c] env) => (just {:a (roughly 20.1)
+                                                                :b (roughly 20.1)
+                                                                :c (roughly 20.1)}))))

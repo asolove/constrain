@@ -33,9 +33,10 @@
   (let [start-value (env var)
         cs (relevant-constraints var constraints env)
         start-energy (total-energy cs env)
-        energy-inc (total-energy cs (update-in env [var] - 0.1))
-        energy-dec (total-energy cs (update-in env [var] + 0.1))
-        slope (/ (- energy-inc energy-dec) 0.2)
+        dx 0.001
+        energy-inc (total-energy cs (update-in env [var] - dx))
+        energy-dec (total-energy cs (update-in env [var] + dx))
+        slope (/ (- energy-inc energy-dec) (* 2 dx))
         intercept (- start-energy (* slope start-value))]
     [intercept slope]))
 
@@ -44,10 +45,15 @@
   (let [approximations (into {} (map #(vec [% (linear-approximation cs % env)]) vars))]
     (apply max-key (comp abs second val) approximations)))
 
+;; magic numbers are suspicious:
+;; why 0.001 as dx? 
+;; why 0.01 as the step? could be dynamic, based on slope
+;; why 0.1 dE/dx as the stopping point? should be smarter if we've
+;; made lots of changes or are going in circles
 (defn walk-downhill
   [cs vars env]
   (let [[var [_ slope]] (sharpest-slope cs vars env)]
-    (if (< (abs slope) 0.1)
+    (if (< (abs slope) 0.01)
       env
       (recur cs vars (update-in env [var] (if (neg? slope) - +) 0.1)))))
 
