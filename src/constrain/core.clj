@@ -19,9 +19,17 @@
 
 (defrecord Colinear [x1 y1 x2 y2 x3 y3]
   Constraint
+  (constrained [self env] #{x1 y1 x2 y2 x3 y3})
+  (changeable [self env] #{x1 y1 x2 y2 x3 y3})
   (degrees-of-freedom-removed [self] 1)
   (error [self env]
-    (1)))
+    (let [[x1 y1 x2 y2 x3 y3] (map env [x1 y1 x2 y2 x3 y3])
+          slope (/ (- y2 y1) (- x2 x1))
+          colinear-x3 (+ y1 (/ (- y3 y1) slope))
+          colinear-y3 (+ x1 (* slope (- x3 x1)))
+          off-x (abs (- x3 colinear-x3))
+          off-y (abs (- y3 colinear-y3))]
+      (min off-x off-y))))
 
 (defn total-energy [constraints env]
   (apply + (map #(Math/pow (error % env) 2) constraints)))

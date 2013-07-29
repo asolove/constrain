@@ -2,10 +2,16 @@
   (:use midje.sweet)
   (:use [constrain.core]))
 
-(facts "SameProp"
+(facts "Same"
        (fact "computes error in that property"
              (error (constrain.core.Same. :a :b) {:a 1 :b 1}) => 0
              (error (constrain.core.Same. :a :b) {:a 1 :b 2}) => 1))
+
+(facts "Colinear"
+       (fact "computes distance of point from line"
+             (let [c1 (constrain.core.Colinear. :x1 :y1 :x2 :y2 :x3 :y3)
+                   env {:x1 0 :y1 0 :x2 1 :y2 1 :x3 2 :y3 3}]
+               (error c1 env) => 1)))
 
 (facts "total-energy"
        (fact "computes sum of errors squared"
