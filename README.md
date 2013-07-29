@@ -6,6 +6,8 @@ This project is delighted to use [Midje](https://github.com/marick/Midje/).
 
 ## How to hack on it
 
-> lein repl
-user=> (use 'midje.repl)
-user=> (autotest)
+Open up the code, tests, and shell in emacs windows. Then:
+
+    > lein repl
+    user=> (use 'midje.repl)
+    user=> (autotest)
