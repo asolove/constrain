@@ -30,6 +30,8 @@
 (facts "walk-downhill"
        (fact "changes the variable to reach a local energy minimum"
              (let [c1 (constrain.core.Same. :a :b)
-                   env {:a 1 :b 10}]
-               (walk-downhill [c1] :a env) => (just  {:a (roughly 10) :b 10}))))
+                   c2 (constrain.core.Same. :a :c)
+                   env {:a 1 :b 10 :c 20}]
+               (walk-downhill [c1] :a env) => (just {:a (roughly 10) :b 10 :c 20})
+               (walk-downhill [c1 c2] :a env) => (just {:a (roughly 15) :b 10 :c 20}))))
 
